@@ -417,7 +417,7 @@ begin
           OrderBookGrid.RowCount:= Count;
           // заполняем ячейки грида
           for i:= 0 to Count - 1 do
-            with pOrderBookItem(items[i])^ do begin
+            with pOrderItem(items[i])^ do begin
               // заполняем цену
               OrderBookGrid.Cells[1, i]:= FloatToStr(price);
               // помещаем кол-во справа или слева от цены, в зависимости от buysell

@@ -45,8 +45,8 @@ type  tOrderBook      = class(tSortedList)
       end;
 
       // элемент "строка в стакане"
-type  pOrderBookItem  = ^tOrderBookItem;
-      tOrderBookItem  = record
+type  pOrderItem  = ^tOrderItem;
+      tOrderItem  = record
         recid         : int64;
         recrev        : int64;
         price         : double;  // цена
@@ -178,11 +178,11 @@ procedure tOrderBook.freeitem(item: pointer);
 begin end;
 
 function tOrderBook.checkitem(item: pointer): boolean;
-begin result:= assigned(item) and (pOrderBookItem(item)^.price > 0); end;
+begin result:= assigned(item) and (pOrderItem(item)^.price > 0); end;
 
 function tOrderBook.compare(item1, item2: pointer): longint;
 begin
-  result:= cmpdouble(pOrderBookItem(item1)^.price, pOrderBookItem(item2)^.price);
+  result:= cmpdouble(pOrderItem(item1)^.price, pOrderItem(item2)^.price);
 end;
 
 procedure tOrderBook.add(item: pointer);
@@ -243,10 +243,10 @@ end;
 procedure tOrderBookList.freeitem(item: pointer);
 begin
   if assigned(item) then begin
-     with pOrderBookItem(item)^ do begin
+     with pOrderItem(item)^ do begin
        if assigned(priceidx) then priceidx.remove(item);
      end;
-     dispose(pOrderBookItem(item));
+     dispose(pOrderItem(item));
   end;
 end;
 
@@ -254,21 +254,21 @@ function tOrderBookList.checkitem(item: pointer): boolean;
 begin result:= assigned(item); end;
 
 function tOrderBookList.compare(item1, item2: pointer): longint;
-begin result:= cmpi64(pOrderBookItem(item1)^.recid, pOrderBookItem(item2)^.recid); end;
+begin result:= cmpi64(pOrderItem(item1)^.recid, pOrderItem(item2)^.recid); end;
 
 function  tOrderBookList.searchadditem(aisin_id: longint): tOrderBook;
 begin if assigned(fOrderBooks) then result:= fOrderBooks.searchadditem(aisin_id) else result:= nil; end;
 
 function tOrderBookList.addrecord(aisin_id: longint; const aid, arev: int64; const aprice, avolume: double; abuysell: longint): boolean;
-var sitm : tOrderBookItem;
+var sitm : tOrderItem;
     idx  : longint;
-    itm  : pOrderBookItem;
+    itm  : pOrderItem;
     cf   : boolean;
 begin
   sitm.recid:= aid;
   result:= search(@sitm, idx);
   if not result then begin
-    itm:= new(pOrderBookItem);
+    itm:= new(pOrderItem);
     with itm^ do begin
       recid    := aid;
       recrev   := arev;
@@ -282,7 +282,7 @@ begin
     end;
     insert(idx, itm);                                                 // добавляем в стакан
   end else begin
-    itm:= pOrderBookItem(items[idx]);
+    itm:= pOrderItem(items[idx]);
 
     cf:= (itm^.price <> aprice);                                      // признак, что цена изменилась
     if cf and assigned(itm^.priceidx) then itm^.priceidx.remove(itm); // удаляем из индекса
@@ -303,7 +303,7 @@ begin
 end;
 
 function tOrderBookList.delrecord(const aid: int64): boolean;
-var itm : tOrderBookItem;
+var itm : tOrderItem;
     idx : longint;
 begin
   itm.recid:= aid;
@@ -313,10 +313,10 @@ end;
 
 procedure tOrderBookList.clearbyrev(const arev: int64);
 var i   : longint;
-    itm : pOrderBookItem;
+    itm : pOrderItem;
 begin
   for i:= count - 1 downto 0 do begin
-    itm:= pOrderBookItem(items[i]);
+    itm:= pOrderItem(items[i]);
     if (itm^.recrev < arev) then delete(i);                           // удаляем из стакана
   end;
 end;
