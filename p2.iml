@@ -6,6 +6,11 @@
         <JRUBY_FACET_CONFIG_ID NAME="JRUBY_SDK_NAME" VALUE="JRuby SDK 1.5.3-p249" />
       </configuration>
     </facet>
+    <facet type="JRUBY" name="JRuby">
+      <configuration number="0">
+        <JRUBY_FACET_CONFIG_ID NAME="JRUBY_SDK_NAME" VALUE="JRuby SDK 1.5.3-p249" />
+      </configuration>
+    </facet>
   </component>
   <component name="GemRequirementsHolder" version="3">
     <requirement>
